@@ -1,11 +1,10 @@
-/// <reference types="node" />
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
-  timeout: 60000, // 60 seconds per test
+  testDir: "./tests",
+  timeout: 90000,
   expect: {
-    timeout: 15000
+    timeout: 10000,
   },
 
   fullyParallel: true,
@@ -13,41 +12,28 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
 
-  reporter: [
-    ['list'],
-    ['html', { open: 'never' }]
-  ],
+  reporter: [["html", { open: "never" }]],
 
   use: {
-    actionTimeout: 0,
+    trace: "on-first-retry",
+    video: "retain-on-failure",
+    screenshot: "on", // corrected option
+    actionTimeout: 20000,
     navigationTimeout: 60000,
-    baseURL: 'https://phptravels.net/',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    viewport: { width: 1280, height: 720 },
-    ignoreHTTPSErrors: true,
-    headless: true,
   },
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
   ],
-
-  webServer: {
-    command: 'echo "No local server required"',
-    port: 3000,
-    reuseExistingServer: true,
-  },
 });
